@@ -10,6 +10,7 @@
 #include <Core/Components/Mesh.h>
 #include <Core/Components/Camera.h>
 #include "Freetype/Renderer/Text.h"
+#include <Core/Components/Vertex.h>
 
 #include "Core/Renderer/RendererResourceCreator.h"
 
@@ -47,10 +48,12 @@ namespace PetrolEngine {
         static Ref<Framebuffer> createFramebuffer(const FramebufferSpecification& spec) { return Ref<Framebuffer>(newFramebuffer(spec)); }
 
         // texture
-        static Texture* newTexture(const Image* image) { return creator->newTexture(image); }
+        static Texture* newTexture(const String& path) { return creator->newTexture(Image(path)); }
+        static Texture* newTexture(const Image& image) { return creator->newTexture(image); }
         static Texture* newTexture(int width, int height, TextureFormat format, TextureType type = TextureType::Texture2D) { return creator->newTexture(width, height, format, type); }
 
-        static Ref<Texture> createTexture(const Image* image){ return Ref<Texture>(newTexture(image)); }
+        static Ref<Texture> createTexture(const String& path){ return Ref<Texture>(newTexture(path)); }
+        static Ref<Texture> createTexture(const Image& image){ return Ref<Texture>(newTexture(image)); }
         static Ref<Texture> createTexture(int width, int height, TextureFormat format, TextureType type = TextureType::Texture2D){ return Ref<Texture>(newTexture(width, height, format, type)); }
 
         // Vertex array
@@ -102,11 +105,11 @@ namespace PetrolEngine {
             auto vao = mesh.getVertexArray();
             Vector<const Texture*> textures;
 
-            textures.reserve(mesh.material.textures.size());
-            for(auto& texture : mesh.material.textures)
+            textures.reserve(mesh.meshRenderer->material.textures.size());
+            for(auto& texture : mesh.meshRenderer->material.textures)
                 textures.push_back(texture.get());
 
-            return renderer->renderMesh(vao.get(), transform, textures, mesh.material.shader.get(), camera);
+            return renderer->renderMesh(vao.get(), transform, textures, mesh.meshRenderer->material.shader.get(), camera);
         }
 
         static void renderText(const String& text, const Transform& transform, const String& font) {
