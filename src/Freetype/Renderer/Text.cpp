@@ -76,21 +76,20 @@ namespace PetrolEngine {
         characters.reserve(128);
         for(unsigned char asciiCode = 0; asciiCode < 128; asciiCode++) {
             err = err ? err : FT_Load_Char(face, asciiCode, FT_LOAD_RENDER);
-             err = err ? err : FT_Render_Glyph(slot, FT_RENDER_MODE_SDF);
-
             if(err) { LOG("FREETYPE ERROR: Failed to load glyph with ASCII " + toString(asciiCode) + " (error code:" + toString(err) + ")", 2); err = 0; continue; }
-
-            if(face->glyph->bitmap.width * face->glyph->bitmap.rows == 0) continue;
+            err = err ? err : FT_Render_Glyph(slot, FT_RENDER_MODE_SDF);
+            
+            //if(face->glyph->bitmap.width * face->glyph->bitmap.rows == 0) continue;
 
             uint8 column = asciiCode % atlas->getCellCountX();
             uint8 row    = asciiCode / atlas->getCellCountX();
 
             atlas->setCell(
-                slot->bitmap.buffer,
+                face->glyph->bitmap.buffer,
                 column,
                 row,
-                slot->bitmap.width,
-                slot->bitmap.rows,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
                 true
             );
 
