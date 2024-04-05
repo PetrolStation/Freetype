@@ -1,5 +1,6 @@
 #include <PCH.h>
 
+#include "Core/DebugTools.h"
 #include "Text.h"
 
 #include <ft2build.h>
@@ -27,14 +28,14 @@ namespace PetrolEngine {
     static FT_Library lib;
     UnorderedMap<String, Text::FontAtlas> Text::fonts;
 
-    Text::FontAtlas& Text::getAtlas(const String& font) {
+    Text::FontAtlas& Text::getAtlas(const String& font) { LOG_FUNCTION();
         if(fonts.find(font) == fonts.end())
             loadFont(font);
 
         return Text::fonts[font];
     }
 
-    int Text::destroy() {
+    int Text::destroy() { LOG_FUNCTION();
         for(auto& font : fonts)
             delete font.second.atlas;
 
@@ -43,7 +44,7 @@ namespace PetrolEngine {
         return FT_Done_FreeType(lib);
     }
 
-    int Text::init() {
+    int Text::init() { LOG_FUNCTION();
         FT_Error err = FT_Init_FreeType(&lib);
 
         if(err)
@@ -57,7 +58,7 @@ namespace PetrolEngine {
         return err;
     }
 
-    int Text::loadFont(const String& font) {
+    int Text::loadFont(const String& font) { LOG_FUNCTION();
         FT_Face face;
         FT_Error err = 0;
 
